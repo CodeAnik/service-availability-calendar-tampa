@@ -47,14 +47,14 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
 ?>
 
 <div class="wrap">
-    <h1>Edit Service Availability</h1>
+    <h1>Edit Property/Unit Availability</h1>
 
     <form method="post">
         <?php wp_nonce_field( 'sac_edit_availability', 'sac_edit_availability_nonce' ); ?>
 
         <table class="form-table">
             <tr>
-                <th><label for="title">Title</label></th>
+                <th><label for="title">Property/Unit Title</label></th>
                 <td><input name="title" type="text" id="title" value="<?php echo esc_attr( $title ); ?>" class="regular-text" required></td>
             </tr>
 
@@ -70,7 +70,10 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
 
             <tr id="availability_details" style="<?php echo ( $availability === 'yes' ) ? '' : 'display:none;'; ?>">
                 <th><label for="availability_date">Available From</label></th>
-                <td><input type="date" id="availability_date" name="availability_date" value="<?php echo esc_attr( $availability_date ); ?>"></td>
+                <td>
+                    <input type="date" id="availability_date" name="availability_date" value="<?php echo esc_attr( $availability_date ); ?>">
+                    <span id="display_date"></span>
+                </td>
             </tr>
         </table>
 
@@ -80,12 +83,31 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
 
 <script>
     jQuery(document).ready(function($) {
-        $('#availability').change(function() {
-            if ($(this).val() === 'yes') {
-                $('#availability_details').show();
-            } else {
-                $('#availability_details').hide();
-            }
+        let availabilitySelect = $('#availability');
+        let availabilityDetails = $('#availability_details');
+        let availabilityDateInput = $('#availability_date');
+        let displayDateSpan = $('#display_date');
+
+        availabilitySelect.change(function() {
+            availabilityDetails.toggle($(this).val() === 'yes');
         }).change();
+
+        // Format and display the date
+        function formatAndDisplayDate() {
+            let selectedDate = availabilityDateInput.val(); // yyyy-mm-dd
+            if (selectedDate) {
+                let dateObj = new Date(selectedDate);
+                let options = { month: 'long', day: 'numeric', year: 'numeric' };
+                let formattedDate = dateObj.toLocaleDateString('en-US', options); // Month Name Day, Year
+                displayDateSpan.text('  ' + formattedDate);
+            } else {
+                displayDateSpan.text('');
+            }
+        }
+
+        availabilityDateInput.on('change', formatAndDisplayDate);
+
+        // Initial format (if there's a date already)
+        formatAndDisplayDate();
     });
 </script>

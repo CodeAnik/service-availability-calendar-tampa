@@ -13,8 +13,8 @@ class SAC_Admin {
 
     public function add_admin_menu() {
         add_menu_page(
-            __( 'Service Availability', 'service-availability-calendar' ),
-            __( 'Service Availability', 'service-availability-calendar' ),
+            __( 'Rental Availability', 'service-availability-calendar' ),
+            __( 'Rental Availability', 'service-availability-calendar' ),
             'manage_options',
             'service-availability',
             array( $this, 'all_availability_page' ),
@@ -24,7 +24,7 @@ class SAC_Admin {
 
         add_submenu_page(
             'service-availability',
-            __( 'Add Service Availability', 'service-availability-calendar' ),
+            __( 'Add Rental Availability', 'service-availability-calendar' ),
             __( 'Add New', 'service-availability-calendar' ),
             'manage_options',
             'add-service-availability',
@@ -33,7 +33,7 @@ class SAC_Admin {
 
         add_submenu_page(
             null, // Hidden submenu for editing
-            __( 'Edit Service Availability', 'service-availability-calendar' ),
+            __( 'Edit Rental Availability', 'service-availability-calendar' ),
             __( 'Edit Availability', 'service-availability-calendar' ),
             'manage_options',
             'edit-service-availability',

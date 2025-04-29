@@ -6,7 +6,11 @@
     padding-bottom: 10px;
 }
 
-.action-button{
+table.fixed {
+    table-layout: auto !important;
+}
+
+.action-button {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -47,78 +51,44 @@
     background-color: #f1f1f1;
 }
 
-/* Make the table more readable on mobile */
+/* Mobile Styles (Excel-like behavior) */
 @media (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+        /* Enable horizontal scrolling */
+    }
+
+    .table-responsive table {
+        width: auto;
+        /* Allow table to expand beyond viewport */
+    }
 
     .table-responsive th,
     .table-responsive td {
+        white-space: nowrap;
+        /* Prevent wrapping */
         padding: 8px 10px;
         font-size: 14px;
     }
 
-    .table-responsive td {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-        text-align: right;
-        position: relative;
-        padding-left: 50%;
-    }
-
-    .table-responsive td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    /* Add specific adjustments for small screens */
-    .table-responsive th {
+    .shortcode-column {
         display: none;
-        /* Hide headers on small screens */
+        /* Hide shortcode column on mobile */
     }
 
-    /* Adjust the action buttons for mobile */
     .action-button {
-        text-align: center;
-    }
-
-    .action-button form {
-        display: block;
-        margin: 5px 0;
-    }
-
-    .action-button a,
-    .action-button input[type="submit"] {
-        width: 100%;
-        margin: 5px 0;
-    }
-}
-
-/* Styles for tablets (768px to 1024px) */
-@media (max-width: 1024px) and (min-width: 768px) {
-
-    .table-responsive th,
-    .table-responsive td {
-        padding: 10px 12px;
-        font-size: 15px;
-    }
-
-    /* Adjust action buttons */
-    .action-button {
-        text-align: center;
-    }
-
-    .action-button form {
-        display: inline-block;
-        margin: 5px;
+        flex-direction: row;
+        /* Keep buttons in a row */
+        justify-content: flex-start;
+        align-items: center;
     }
 
     .action-button a,
     .action-button input[type="submit"] {
         width: auto;
-        margin: 0 5px;
+        display: inline-block;
+        font-size: 12px;
+        /* Display buttons inline */
     }
 }
 
