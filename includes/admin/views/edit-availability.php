@@ -14,6 +14,7 @@ $availability_id = intval( $_GET['id'] );
 $title              = get_the_title( $availability_id );
 $availability       = get_post_meta( $availability_id, '_sac_is_available', true );
 $availability_date  = get_post_meta( $availability_id, '_sac_availability_date', true );
+$property_price     = get_post_meta( $availability_id, '_sac_property_price', true );
 
 // Handle form submission
 if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['sac_edit_availability_nonce'], 'sac_edit_availability' ) ) {
@@ -21,6 +22,7 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
     $new_title              = sanitize_text_field( $_POST['title'] );
     $new_availability       = sanitize_text_field( $_POST['availability'] );
     $new_availability_date  = sanitize_text_field( $_POST['availability_date'] );
+    $new_property_price     = isset($_POST['property_price']) ? floatval($_POST['property_price']) : 0;
 
     // Update post title
     wp_update_post( array(
@@ -30,6 +32,8 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
 
     // Update metadata
     update_post_meta( $availability_id, '_sac_is_available', $new_availability );
+    update_post_meta( $availability_id, '_sac_property_price', $new_property_price );
+    
     if ( 'yes' === $new_availability && ! empty( $new_availability_date ) ) {
         update_post_meta( $availability_id, '_sac_availability_date', $new_availability_date );
     } else {
@@ -42,6 +46,7 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
     $title              = $new_title;
     $availability       = $new_availability;
     $availability_date  = $new_availability_date;
+    $property_price     = $new_property_price;
 }
 
 ?>
@@ -59,6 +64,15 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
             </tr>
 
             <tr>
+                <th><label for="property_price">Property Price</label></th>
+                <td>
+                    <input type="number" step="0.01" min="0" name="property_price" id="property_price" 
+                           value="<?php echo esc_attr( $property_price ); ?>" class="regular-text" required>
+                    <p class="description"><?php esc_html_e( 'Enter the price per month (only number)', 'service-availability-calendar' ); ?></p>
+                </td>
+            </tr>
+
+            <tr>
                 <th><label for="availability">Availability</label></th>
                 <td>
                     <select name="availability" id="availability">
@@ -73,6 +87,14 @@ if ( isset( $_POST['sac_edit_availability_nonce'] ) && wp_verify_nonce( $_POST['
                 <td>
                     <input type="date" id="availability_date" name="availability_date" value="<?php echo esc_attr( $availability_date ); ?>">
                     <span id="display_date"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Shortcodes</th>
+                <td>
+                    <p><strong>Availability Shortcode:</strong> <code>[service_availability id="<?php echo esc_attr( $availability_id ); ?>"]</code></p>
+                    <p><strong>Price Shortcode:</strong> <code>[service_price id="<?php echo esc_attr( $availability_id ); ?>"]</code></p>
                 </td>
             </tr>
         </table>

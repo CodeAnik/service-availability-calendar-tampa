@@ -9,6 +9,7 @@ class SAC_Public {
 	public function __construct() {
 		add_action( 'sac_service_availability_saved', array( $this, 'handle_service_availability_saved' ), 10, 3 );
 		add_shortcode( 'service_availability', array( $this, 'service_availability_shortcode' ) );
+		add_shortcode( 'service_price', array( $this, 'service_price_shortcode' ) );
 	}
 
 	public function handle_service_availability_saved( $post_id, $is_available, $availability_date ) {
@@ -40,6 +41,26 @@ class SAC_Public {
 		} else {
 			return esc_html__( 'Available Now', 'service-availability-calendar' );
 		}
+	}
+
+
+	public function service_price_shortcode( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'id' => 0,
+			),
+			$atts,
+			'service_price'
+		);
+
+		$post_id = intval( $atts['id'] );
+		$price = get_post_meta( $post_id, '_sac_property_price', true );
+
+		if ( $price ) {
+			return '$' . number_format( $price) . '/mo';
+		}
+
+		return esc_html__( 'TBD', 'service-availability-calendar' );
 	}
 
 }

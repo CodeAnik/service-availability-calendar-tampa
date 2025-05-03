@@ -4,9 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( isset( $_POST['sac_submit'] ) ) {
-    $service_title   = sanitize_text_field( $_POST['service_title'] );
-    $is_available    = sanitize_text_field( $_POST['availability'] );
-    $availability_date = '';
+    $service_title        = sanitize_text_field( $_POST['service_title'] );
+    $is_available         = sanitize_text_field( $_POST['availability'] );
+    $availability_date    = '';
+    $property_price       = isset($_POST['property_price']) ? floatval($_POST['property_price']) : 0;
 
     if ( 'yes' === $is_available ) {
         $availability_date = sanitize_text_field( $_POST['availability_date'] );
@@ -22,6 +23,8 @@ if ( isset( $_POST['sac_submit'] ) ) {
 
     if ( $post_id ) {
         update_post_meta( $post_id, '_sac_is_available', $is_available );
+        update_post_meta( $post_id, '_sac_property_price', $property_price );
+        
         if ( 'yes' === $is_available && ! empty( $availability_date ) ) {
             update_post_meta( $post_id, '_sac_availability_date', $availability_date );
         } else {
@@ -46,6 +49,13 @@ if ( isset( $_POST['sac_submit'] ) ) {
                 <td><input type="text" name="service_title" class="regular-text" required></td>
             </tr>
             <tr valign="top">
+                <th scope="row"><?php esc_html_e( 'Property Price', 'service-availability-calendar' ); ?></th>
+                <td>
+                    <input type="number" step="0.01" min="0" name="property_price" class="regular-text" required>
+                    <p class="description"><?php esc_html_e( 'Enter the price per month', 'service-availability-calendar' ); ?></p>
+                </td>
+            </tr>
+            <tr valign="top">
                 <th scope="row"><?php esc_html_e( 'Availability', 'service-availability-calendar' ); ?></th>
                 <td>
                     <select name="availability" id="availability">
@@ -58,7 +68,8 @@ if ( isset( $_POST['sac_submit'] ) ) {
                 <th scope="row"><?php esc_html_e( 'Available From', 'service-availability-calendar' ); ?></th>
                 <td>
                     <input type="date" id="availability_date" name="availability_date">
-                    <span id="display_date"></span>  </td>
+                    <span id="display_date"></span>
+                </td>
             </tr>
         </table>
         <?php submit_button( __( 'Save Availability', 'service-availability-calendar' ), 'primary', 'sac_submit' ); ?>
