@@ -3,6 +3,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     die;
 }
 
+// Check for success parameter in URL
+$deleted = isset( $_GET['deleted'] ) ? absint( $_GET['deleted'] ) : 0;
+
 $availabilities = get_posts(
     array(
         'post_type'   => 'service_availability',
@@ -19,14 +22,20 @@ if ( isset( $_POST['delete_availability'] ) && isset( $_POST['sac_delete_nonce']
     }
 
     if ( current_user_can( 'delete_posts' ) ) {
-        wp_delete_post( $delete_id, true );
-        wp_redirect( admin_url( 'admin.php?page=service-availability' ) );
-        exit;
+        if ( wp_delete_post( $delete_id, true ) ) {
+            // Redirect with success parameter
+            wp_redirect( add_query_arg( 'deleted', 1, admin_url( 'admin.php?page=service-availability' ) ) );
+            exit;
+        }
     } else {
         echo 'You do not have permission to delete this post.';
     }
 }
 
+// Show success message if item was deleted
+if ( $deleted ) {
+    echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Availability deleted successfully.', 'service-availability-calendar' ) . '</p></div>';
+}
 ?>
 
 <div class="wrap">
